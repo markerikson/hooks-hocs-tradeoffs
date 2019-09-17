@@ -1,0 +1,118 @@
+import {  Cite, Slide, Heading, Text, Layout, Fill, Image, GoToAction, Markdown} from 'spectacle';
+import {DarkSlide, CodeSlide, TitleSlide} from 'components/slides';
+import {LeftCodeRightContent} from "components/LeftCodeRightContent";
+
+
+## A Brief History of Code Reuse Patterns in React
+
+export default (props) => <TitleSlide {...props} />
+
+---
+
+import mouseMixin from "./examples/mouseMixin";
+
+#### Mixins
+
+<LeftCodeRightContent
+    leftSource={mouseMixin}
+    leftStyle={{maxWidth: 700}}
+    rightContent={
+        <Markdown source={`
+- Partial state and functions are "mixed in" to components
+- Built into early versions of React as part of \`createReactClass\`
+- Not supported with ES6 classes (\`React.Component\` ) or function components
+  
+    
+- **Pros**:
+  - Did enable sharing logic
+  - Common pattern in earlier JS usage
+- **Cons**:
+  - Implicit dependencies
+  - Name clashes
+  - Inheritance complexity
+        `}  
+    />}
+/>
+
+
+---
+
+import mouseHOC from "./examples/mouseHOC";
+
+#### Higher-Order Components (HOCs)
+
+<LeftCodeRightContent
+    leftSource={mouseHOC}
+    leftStyle={{maxWidth: 700}}
+    rightContent={
+        <Markdown source={`
+- Decorator-based approach: function takes a component, returns a wrapper component that passes down data as props
+  
+    
+- **Pros**:
+  - Works with any component type
+  - Encourages "container/presentational" pattern
+- **Cons**:
+  - Some indirection
+  - Name clashes
+  - Complex nested component tree
+        `}  
+    />}
+/>
+
+
+---
+
+import mouseRenderProps from "./examples/mouseRenderProps";
+
+#### Render Props
+
+<LeftCodeRightContent
+    leftSource={mouseRenderProps}
+    leftStyle={{maxWidth: 700}}
+    rightContent={
+        <Markdown source={`
+- Delegation-based approach: 
+    - store data and accept a render callback
+    - parent "renders" by running callback, passing in values, and returning output 
+    
+    
+- **Pros**:
+  - Works with any component type
+  - Can be used to implement HOCs
+  - Runtime composition instead of "static" composition
+- **Cons**:
+  - Somewhat harder to compose
+  - Deep nesting of render props in one component
+    becomes difficult to read
+        `}  
+    />}
+/>
+
+
+---
+
+import mouseHook from "./examples/mouseHook";
+
+#### Hooks
+
+<LeftCodeRightContent
+    leftSource={mouseHook}
+    leftStyle={{maxWidth: 700}}
+    rightContent={
+        <Markdown source={`
+- Data flow composition approach
+  
+  
+- **Pros**:
+    - Easy to compose
+    - No name clashing
+    - Easy to extract logic as a custom hook
+- **Cons**:
+    - Have to follow "Rules of Hooks"
+    - Closures and "stale props" can be tricky
+    - Only works with function components
+    - A few use cases are harder to implement
+        `}  
+    />}
+/>
