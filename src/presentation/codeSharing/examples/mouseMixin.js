@@ -4,10 +4,7 @@ const MouseMixin = {
   },
 
   handleMouseMove(e) {
-    this.setState({
-      x: e.clientX,
-      y: e.clientY
-    });
+    this.setState({ x: e.clientX, y: e.clientY });
   }
 };
 

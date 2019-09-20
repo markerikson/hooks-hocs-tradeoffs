@@ -1,0 +1,130 @@
+import {  Cite, Slide, Heading, Text, Layout, Fill, Image, GoToAction, Markdown} from 'spectacle';
+import {DarkSlide, CodeSlide, TitleSlide} from 'components/slides';
+import {LeftCodeRightContent} from "components/LeftCodeRightContent";
+
+
+#### Hooks Reception
+
+**Excitement:**
+
+- "Hook ALL THE THINGS!"
+- "I write all my code with hooks now"
+- "Why would anyone still use classes?"
+
+
+**And real-world questions:**
+
+- "How do I test components that depend on an outside data source like a Redux store?"
+- "Doesn't use of hooks and context reduce separation of concerns?"
+- "What about the 'noise' from writing a bunch of hooks and callbacks inline in the component?"
+
+
+---
+
+#### What's Actually New with Hooks?
+
+**In some ways: NOTHING!**
+
+- Class components already had state and side effects
+- Logic _could_ be extracted into functions if you wanted to
+- Function components "just" do the same things now
+
+
+**In other ways: EVERYTHING!**
+
+- Function components _can_ have state and effects
+- Can write entire apps without using classes
+- Logic can be co-located and trivially extracted for reuse
+- No more `this`, but now have to understand closures 
+- Components are larger because of need for closures
+
+
+---
+
+#### "Separation of Concerns?"
+
+Hooks deliberately make different tradeoffs on the "separation of concerns" and "simplicity" spectrums than HOCs do:
+
+
+- **HOCs:**
+    - Promote writing plain components that receive all data as props, keeping them generic, decoupled, and potentially reusable
+    - Potential name clashes, extra layers in the component tree and DevTools, extremely complex static typing, and edge cases like ref access
+- **Hooks:**
+    - Shrink the component tree, promote extracting logic as plain functions, are easier to statically type, and are more easily composable
+    - Lead towards a stronger coupling with dependencies (especially for any use of context) 
+    
+**Hooks deliberately lead away from "separation of concerns"**. A component now explicitly expects to read its own 
+data from somewhere _and_ render it. You could write separate components for fetching and rendering, but now you've 
+reinvented the HOC.
+
+
+---
+
+#### React-Redux Usage: `connect`
+
+- Recommendation: ["Keep components components unaware of Redux"](https://react-redux.js.org/introduction/why-use-react-redux#it-encourages-good-react-architecture):
+
+> They should simply receive data and functions as props, just like any other React component. This ultimately makes it easier to test and reuse your own components.
+
+- Don't use `props.dispatch()` directly - [move async logic outside components to keep it reusable](https://redux.js.org/faq/actions#how-can-i-represent-side-effects-such-as-ajax-calls-why-do-we-need-things-like-action-creators-thunks-and-middleware-to-do-async-behavior)
+
+---
+
+#### React-Redux Usage: `connect`
+
+
+- Use [action creators, thunks, and `mapDispatch`](https://blog.isquaredsoftware.com/2016/10/idiomatic-redux-why-use-action-creators/) to dispatch actions without explicit mention of `dispatch` at the call site, and to enable generic "presentational" components:
+
+> In general, Redux suggests that code with side effects should be part of the action creation process. While that logic can be performed inside of a UI component, it generally makes sense to extract that logic into a reusable function so that the same logic can be called from multiple places—in other words, an action creator function.
+
+- Automatically optimizes re-renders based on parent props
+
+---
+
+
+#### React-Redux Usage: `connect`
+
+
+
+"Container/presentational" concept over-interpreted by the community. Still useful, but being de-emphasized:
+
+- Dan Abramov has marked his ["container/presentational" article as outdated](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
+- Our [planned Redux docs revamp](https://github.com/reduxjs/redux/issues/3313) will drop that phrasing from the "Usage with React" page 
+
+---
+
+#### React-Redux Usage: Hooks
+
+- `useSelector` just formalizes [the "selector function" concept we've already encouraged](https://blog.isquaredsoftware.com/2017/12/idiomatic-redux-using-reselect-selectors/)
+    - Can potentially reuse `mapState` functions if memoized, or used with `shallowEqual` comparison
+- `useDispatch` means you always have `dispatch` directly available
+    - Drops the "bound action creator" abstraction
+    - Can easily write async code in a `useEffect` and dispatch
+    - Not as much _need_ to externalize async logic in thunks?
+- Can use both of them in [custom hooks for more complex logic](https://blog.logrocket.com/how-to-convert-your-existing-redux-containers-to-hooks/)
+- No wrapper component, so you'll need to wrap in `React.memo()` to optimize re-renders if necessary
+
+React-Redux hooks do couple the component more tightly to Redux, because that's true for any component that is using context rather than props. 
+There's an implicit dependency on that context instance and the data being provided.
+
+
+---
+
+#### Conclusions: It's About Tradeoffs
+
+**Neither approach is "right" or "wrong" - it's about what tradeoffs you want to make:**
+
+- How much do you want to "separate concerns"?
+- Do you prefer "shallow" testing of components, or fully "mounting/integrating" them?
+- How important are shallow component trees and static typing?
+
+**It'll take a long time to figure out best practices:**  
+
+- Mixins -> HOCs -> Render Props -> Hooks took years of evolution
+- What will hooks usage patterns look like a few years from now?
+
+**Is your code ["app-centric" or "component-centric"](https://twitter.com/acemarke/status/1056669495354421249)?**
+
+- Is React itself your actual "app"?
+- Or is it the "view layer" on top of external state and logic?
+

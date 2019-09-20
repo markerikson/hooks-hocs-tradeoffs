@@ -3,10 +3,7 @@ const withMousePosition = WrappedComponent => {
     state = { x: 0, y: 0 };
 
     handleMouseMove = e => {
-      this.setState({
-        x: e.clientX,
-        y: e.clientY
-      });
+      this.setState({ x: e.clientX, y: e.clientY });
     };
 
     render() {
